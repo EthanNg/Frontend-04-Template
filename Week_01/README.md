@@ -1,5 +1,10 @@
 # 学习笔记
 
+1.class-01-实现一个TicTacToe游戏
+2.class-02-给游戏添加一个完美的AI
+
+## 技巧
+
 1. 借助 label 可以选择 break 指定的 loop
 
    ```javascript

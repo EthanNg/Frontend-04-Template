@@ -1,0 +1,164 @@
+<!-- TODO 加入ai（bestChoice 完善） -->
+<style>
+    .cell {
+        width: 100px;
+        height: 100px;
+        background-color: antiquewhite;
+        display: inline-block;
+        border: solid 1px darkcyan;
+        vertical-align: middle;
+
+        line-height: 100px;
+        font-size: 50px;
+        text-align: center;
+    }
+</style>
+
+<div id="board"></div>
+
+<script>
+    let color = 2;
+
+    let pattern = [
+        [0, 1, 0],
+        [0, 2, 0],
+        [0, 0, 0],
+    ];
+
+    function check(pattern, color) {
+        for (let i = 0; i < 3; i++) {
+            // 行判断
+            let win = true;
+            for (let j = 0; j < 3; j++) {
+                if (pattern[i][j] !== color) {
+                    win = false;
+                }
+            }
+            if (win)
+                return true;
+        }
+        // 竖判断
+        for (let j = 0; j < 3; j++) {
+            let win = true;
+            for (let i = 0; i < 3; i++) {
+                if (pattern[i][j] !== color) {
+                    win = false;
+                }
+            }
+            if (win)
+                return true;
+        }
+        // 斜线判断——1、横纵坐标相等
+        {
+            let win = true;
+            for (let i = 0; i < 3; i++) {
+                if (pattern[i][i] !== color) {
+                    win = false;
+                }
+            }
+            if (win)
+                return true;
+        }
+        // 斜线判断——2、横纵坐标相加为 length - 1
+        {
+            let win = true;
+            for (let i = 0; i < 3; i++) {
+                if (pattern[i][2 - i] !== color) {
+                    win = false;
+                }
+            }
+            if (win)
+                return true;
+        }
+        return false;
+    }
+
+    function show(pattern) {
+        let board = document.getElementById('board');
+
+        board.innerHTML = '';
+
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                let cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.innerText =
+                    pattern[i][j] === 2 ? '❎' :
+                        pattern[i][j] === 1 ? '⭕️' : '';
+                // 加入事件
+                // aysnc
+                cell.addEventListener('click', () => move(i, j));
+                board.appendChild(cell);
+            }
+            board.appendChild(document.createElement('br'));
+        }
+    }
+
+    function move(x, y) {
+        if (pattern[x][y] === 0) { // 只能点击空白
+            pattern[x][y] = color;
+            if (check(pattern, color)) {
+                alert(color === 2 ? '❎ is winner' : '⭕️ is winner');
+            }
+            color = 3 - color;
+            console.log(bestChoice(pattern, color));
+            show(pattern);
+            /* if (willWin(pattern, color)) {
+                console.log(color === 2 ? '❎ will win' : '⭕️ will win');
+            } */
+        }
+    }
+
+    function clone(pattern) {
+        return JSON.parse(JSON.stringify(pattern));
+    }
+
+    function willWin(pattern, color) {
+        for(let i = 0; i < 3; i++) {
+            for(let j = 0; j < 3; j++) {
+                if (pattern[i][j] !== 0)
+                    continue;
+                let tmp = clone(pattern);
+                tmp[i][j] = color;
+                if (check(tmp, color)) {
+                    return [i, j];
+                }
+            }
+        }
+        return null;
+    }
+
+    // -1 输； 0 和； 1 赢
+    function bestChoice(pattern, color) {
+        let p;
+        if (p = willWin(pattern, color)) {
+            return {
+                point: p,
+                result: 1,
+            };
+        }
+        let result = -2;
+        let point = null;
+        for(let i = 0; i < 3; i++) {
+            for(let j = 0; j < 3; j++) {
+                if (pattern[i][j])
+                    continue;
+                let tmp = clone(pattern);
+                tmp[i][j] = color;
+                let r = bestChoice(tmp, 3 - color).result;
+
+                if (- r > result) {
+                    result  = - r;
+                    point = [i, j];
+                }
+            }
+        }
+        return {
+            point: point,
+            result: point ? result : 0
+        }
+    }
+
+    show(pattern);
+    console.log(bestChoice(pattern, color));
+</script>

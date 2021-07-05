@@ -1,0 +1,109 @@
+<!-- TODO 判断输赢 -->
+<style>
+    .cell {
+        width: 100px;
+        height: 100px;
+        background-color: antiquewhite;
+        display: inline-block;
+        border: solid 1px darkcyan;
+        vertical-align: middle;
+
+        line-height: 100px;
+        font-size: 50px;
+        text-align: center;
+    }
+</style>
+
+<div id="board"></div>
+
+<script>
+    let color = 1;
+
+    let pattern = [
+        [0, 0, 0],
+        [0, 2, 0],
+        [0, 0, 0],
+    ];
+
+    function check(pattern, color) {
+        for (let i = 0; i < 3; i++) {
+            // 行判断
+            let win = true;
+            for (let j = 0; j < 3; j++) {
+                if (pattern[i][j] !== color) {
+                    win = false;
+                }
+            }
+            if (win)
+                return true;
+        }
+        // 竖判断
+        for (let j = 0; j < 3; j++) {
+            let win = true;
+            for (let i = 0; i < 3; i++) {
+                if (pattern[i][j] !== color) {
+                    win = false;
+                }
+            }
+            if (win)
+                return true;
+        }
+        // 斜线判断——1、横纵坐标相等
+        {
+            let win = true;
+            for (let i = 0; i < 3; i++) {
+                if (pattern[i][i] !== color) {
+                    win = false;
+                }
+            }
+            if (win)
+                return true;
+        }
+        // 斜线判断——2、横纵坐标相加为 length - 1
+        {
+            let win = true;
+            for (let i = 0; i < 3; i++) {
+                if (pattern[i][2 - i] !== color) {
+                    win = false;
+                }
+            }
+            if (win)
+                return true;
+        }
+        return false;
+    }
+
+    function show(pattern) {
+        let board = document.getElementById('board');
+
+        board.innerHTML = '';
+
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                let cell = document.createElement('div');
+                cell.classList.add('cell');
+                cell.innerText =
+                    pattern[i][j] === 2 ? '❎' :
+                        pattern[i][j] === 1 ? '⭕️' : '';
+                // 加入事件
+                // aysnc
+                cell.addEventListener('click', () => move(i, j));
+                board.appendChild(cell);
+            }
+            board.appendChild(document.createElement('br'));
+        }
+    }
+
+    function move(x, y) {
+        if (pattern[x][y] === 0) { // 只能点击空白
+            pattern[x][y] = color;
+            if (check()) {
+                alert(color === 2 ? '❎ is winner' : '⭕️ is winner');
+            }
+            color = 3 - color;
+            show();
+        }
+    }
+
+    show(pattern);
+</script>

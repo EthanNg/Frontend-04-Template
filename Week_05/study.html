@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>week05-study</title>
+</head>
+
+<body>
+    <div>week05-stu</div>
+    <script>
+        /**
+         * 声明
+         */
+        // 预处理
+        /* var a = 2;
+        try {
+            void function () {
+                a = 1;
+                return;
+                var a;
+            }();
+        } catch (e) {
+            console.log(e);
+        }
+        console.log(`a: ${a}`);
+        // 2
+        */
+
+
+        /* var a = 2;
+        void function () {
+            a = 1;
+            return;
+            const a;
+        }();
+        console.log(`a: ${a}`); */
+        // 报错
+        // Uncaught SyntaxError: Missing initializer in const declaration
+        /**
+         * 结论：任何声明都是有预处理机制，
+         * 都能把变量变成一个局部变量，
+         * 区别是const在声明前使用的话会抛错，
+         * 而且该错误能够被catch出来。
+         */
+
+
+        /**
+         * 作用域
+         */
+
+
+        /**
+         * 宏任务和微任务
+         */
+        var x = 1;
+        var p = new Promise(res => res());
+        p.then(() => x = 3);
+        x = 2;
+        // 最终结果：执行这段代码结果是 x = 3;
+        /**
+         * 将这段代码丢给js引擎
+         * 1、会产生两个异步任务，而这两个异步任务，称作 MicroTask（标准里面叫Job）
+         *  1.1、x=1
+         *       p=...
+         *       x=2
+         *  1.2、x=3
+         * 因为有两个微任务，所以最后输出的只有一个微任务的结果 x=3
+         * 2、那么整个过程就是一个宏任务 MacroTask
+         */
+    </script>
+</body>
+
+</html>
